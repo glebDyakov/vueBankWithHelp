@@ -1,0 +1,55 @@
+import axios from 'axios'
+import {error} from '../../utils/error'
+const TOKEN_KEY = 'jwt-token'
+export default {
+    namespaced: true,
+    state(){
+        return {
+            token: localStorage.getItem(TOKEN_KEY)
+        }
+    },
+    mutations:{
+        setToken(state, token){
+            state.token = token
+            localStorage.setItem(TOKEN_KEY, token)
+        },
+        logout(state){
+            state.token = null
+            localStorage.removeItem(TOKEN_KEY)
+        }
+    },
+    actions:{
+        async login({ commit, dispatch }, payload){
+            try {
+                // const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_FB_KEY}`
+                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAs8VapnxLWWyp34LBonZqbBIvGG7MR7R8`
+                
+                const { data } = await axios.post(url, {...payload, returnSecureToken:true })
+                console.log('payload', payload)
+                // console.log('Data ', data)
+                console.log('Data ', data.idToken)
+                // commit('setToken', 'TEST TOKEN')
+                commit('setToken', data.idToken)
+            } catch(e) {
+                // console.dir(e.response.data.error.message)
+                dispatch('clearMessage', null, { root:true })
+
+                dispatch('setMessage', {
+                    value: error(e.response.data.error.message),
+                    type: 'danger'
+                }, { root:true })
+                // console.log(error(e.response.data.error.message))
+                throw new Error()
+            }
+            
+        }
+    },
+    getters: {
+        token(state){
+            return state.token
+        },
+        isAuthenticated(_, state){
+            return !!state.token
+        },
+    }
+}
