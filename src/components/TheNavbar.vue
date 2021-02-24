@@ -2,16 +2,16 @@
     <nav class="navbar">
         <ul class="navbar menu">
             <li>
-                <a href="#">Заявки</a>
+                <router-link to="/">Заявки</router-link>
             </li>
             <li>
-                <a href="#">Помощь</a>
+                <router-link to="/help">Помощь</router-link>
             </li>
             <li>
-                <a href="#">Сообщения</a>
+                <router-link to="/">Сообщения</router-link>
             </li>
             <li>
-                <a href="#" @click="logout">Выход</a>
+                <router-link to="/" @click="logout">Выход</router-link>
             </li>
         </ul>
     </nav>
